@@ -1,0 +1,39 @@
+services:
+
+  postgres:
+    image: postgres:16
+
+    container_name: admin-team-pokemon-db
+
+    environment:
+      POSTGRES_DB: pokemondb
+      POSTGRES_USER: pokemon_user
+      POSTGRES_PASSWORD: pokemon_password
+
+    ports:
+      - "5432:5432"
+
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  pokemon-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+
+    container_name: admin-team-pokemon-api
+
+    depends_on:
+      - postgres
+
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      JWT_SECRET: MiSuperSecretJWTDeMasDe32Caracteres
+
+    ports:
+      - "8080:8080"
+
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
