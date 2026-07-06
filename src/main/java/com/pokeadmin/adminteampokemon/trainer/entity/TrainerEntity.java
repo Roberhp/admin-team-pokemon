@@ -45,5 +45,7 @@ public class TrainerEntity {
     @OneToMany(mappedBy = "trainer", fetch = FetchType.LAZY)
     private List<CapturedPokemonEntity> capturedPokemons;
 
+    @Column
+    private String region;
 
 }

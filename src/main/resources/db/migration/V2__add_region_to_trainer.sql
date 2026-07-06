@@ -1,0 +1,2 @@
+ALTER TABLE entrenador
+ADD COLUMN region VARCHAR(100);
