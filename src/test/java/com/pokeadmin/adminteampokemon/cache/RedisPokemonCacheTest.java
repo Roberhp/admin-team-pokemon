@@ -1,4 +1,4 @@
-package com.pokeadmin.adminteampokemon.integration.pokemon.cache;
+package com.pokeadmin.adminteampokemon.cache;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 
+import com.pokeadmin.adminteampokemon.integration.pokemon.cache.RedisPokemonCache;
 import com.pokeadmin.adminteampokemon.integration.pokemon.model.PokemonInfo;
 
 class RedisPokemonCacheTest {

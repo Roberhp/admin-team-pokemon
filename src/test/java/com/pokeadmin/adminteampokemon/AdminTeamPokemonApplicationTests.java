@@ -8,21 +8,23 @@ import com.pokeadmin.adminteampokemon.capture.repository.CapturePokemonRepositor
 import com.pokeadmin.adminteampokemon.trainer.repository.TrainerRepository;
 
 @SpringBootTest(properties = {
-		"spring.autoconfigure.exclude=org.springframework.boot.jdbc.autoconfigure.DataSourceAutoConfiguration,"
-				+ "org.springframework.boot.hibernate.autoconfigure.HibernateJpaAutoConfiguration",
-		"jwt.secret=test-secret-key-for-admin-team-pokemon-tests",
-		"jwt.expiration=3600000"
+        "spring.autoconfigure.exclude=" +
+                "org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration," +
+                "org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration",
+        "spring.flyway.enabled=false",
+        "jwt.secret=test-secret-key-for-admin-team-pokemon-tests",
+        "jwt.expiration=3600000"
 })
 class AdminTeamPokemonApplicationTests {
 
-	@MockitoBean
-	private TrainerRepository trainerRepository;
+    @MockitoBean
+    private TrainerRepository trainerRepository;
 
-	@MockitoBean
-	private CapturePokemonRepository capturePokemonRepository;
+    @MockitoBean
+    private CapturePokemonRepository capturePokemonRepository;
 
-	@Test
-	void contextLoads() {
-	}
+    @Test
+    void contextLoads() {
+    }
 
 }

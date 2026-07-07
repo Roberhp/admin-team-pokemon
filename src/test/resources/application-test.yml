@@ -1,0 +1,19 @@
+spring:
+
+  datasource:
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: validate
+
+  flyway:
+    enabled: true
+
+  data:
+    redis:
+      timeout: 2s
+
+jwt:
+  secret: test-secret
+  expiration: 3600000

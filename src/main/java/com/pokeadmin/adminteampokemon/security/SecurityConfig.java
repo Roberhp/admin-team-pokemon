@@ -38,3 +38,4 @@ public class SecurityConfig {
                                 .build();
         }
 }
+// curl -v \ -H "Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIiwidXNlcm5hbWUiOiJzdHJpbmciLCJpYXQiOjE3ODMzNzczODUsImV4cCI6MTc4MzM4MDk4NX0.j2zx1odTpaF2PqzyaovpYiCXQDnWDOL-VaOvZL2RHEE" \ http://localhost:8080/api/pokemon/storage?page=0&size=1

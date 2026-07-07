@@ -1,9 +1,10 @@
 package com.pokeadmin.adminteampokemon.capture.repository;
 
 
-import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.pokeadmin.adminteampokemon.capture.entity.CapturedPokemonEntity;
@@ -21,7 +22,7 @@ public interface CapturePokemonRepository extends JpaRepository<CapturedPokemonE
 
     Optional<CapturedPokemonEntity> findByCapturedPokemonId(Long capturedPokemonId);
 
-    List<CapturedPokemonEntity> findByTrainerTrainerIdAndLocation(Long trainerId, PokemonLocation location);
+    Page<CapturedPokemonEntity> findByTrainerTrainerIdAndLocation(Long trainerId, PokemonLocation location, Pageable pageable);
 
     void deleteByCapturedPokemonId(Long capturedPokemonId);
     

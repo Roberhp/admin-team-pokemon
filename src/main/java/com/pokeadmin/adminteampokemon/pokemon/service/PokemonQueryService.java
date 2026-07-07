@@ -3,6 +3,8 @@ package com.pokeadmin.adminteampokemon.pokemon.service;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.pokeadmin.adminteampokemon.capture.entity.CapturedPokemonEntity;
@@ -25,12 +27,14 @@ public class PokemonQueryService {
         this.pokemonClient = pokemonClient;
     }
 
-    public List<PokemonInfoResponse> findPokemonByLocation(Long trainerId, PokemonLocation location) {
-        List<CapturedPokemonEntity> capturedPokemon = capturePokemonRepository.findByTrainerTrainerIdAndLocation(trainerId, location);
-        
-        return capturedPokemon.stream()
-                .map(PokemonInfoResponse::new)
-                .toList();
+    public Page<PokemonInfoResponse> findPokemonByLocation(Long trainerId, PokemonLocation location, Pageable pageable) {
+        Page<CapturedPokemonEntity> capturedPokemon = capturePokemonRepository.findByTrainerTrainerIdAndLocation(trainerId, location, pageable);
+
+        return capturedPokemon.map(PokemonInfoResponse::new);
+
+        //return capturedPokemon.stream()
+        //        .map(PokemonInfoResponse::new)
+        //        .toList();
         
     }
 

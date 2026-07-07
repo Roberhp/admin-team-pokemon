@@ -1,4 +1,4 @@
-package com.pokeadmin.adminteampokemon.capture.service;
+package com.pokeadmin.adminteampokemon.capture;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -19,6 +19,7 @@ import com.pokeadmin.adminteampokemon.capture.dto.CapturePokemonResponse;
 import com.pokeadmin.adminteampokemon.capture.entity.CapturedPokemonEntity;
 import com.pokeadmin.adminteampokemon.capture.entity.PokemonLocation;
 import com.pokeadmin.adminteampokemon.capture.repository.CapturePokemonRepository;
+import com.pokeadmin.adminteampokemon.capture.service.CapturePokemonService;
 import com.pokeadmin.adminteampokemon.common.exception.PokemonAlreadyExistsException;
 import com.pokeadmin.adminteampokemon.common.exception.PokemonStorageFullException;
 import com.pokeadmin.adminteampokemon.common.exception.TrainerNotFoundException;
@@ -28,7 +29,7 @@ import com.pokeadmin.adminteampokemon.trainer.entity.TrainerEntity;
 import com.pokeadmin.adminteampokemon.trainer.repository.TrainerRepository;
 
 @ExtendWith(MockitoExtension.class)
-public class CapturePokemonServiceTest {
+public class CaptureServiceIntegrationTest {
 
     @Mock
     private CapturePokemonRepository capturePokemonRepository;

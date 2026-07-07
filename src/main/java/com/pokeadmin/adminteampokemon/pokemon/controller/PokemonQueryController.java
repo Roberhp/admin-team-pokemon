@@ -9,8 +9,10 @@ import com.pokeadmin.adminteampokemon.pokemon.dto.PokemonSummaryResponse;
 import com.pokeadmin.adminteampokemon.pokemon.service.PokemonQueryService;
 import com.pokeadmin.adminteampokemon.security.AuthenticatedTrainer;
 
-import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,18 +28,22 @@ public class PokemonQueryController {
     }
 
     @GetMapping("/team")
-    public ResponseEntity<List<PokemonInfoResponse>> getTeamPokemon(Authentication authentication) {
+    public ResponseEntity<Page<PokemonInfoResponse>> getTeamPokemon(Authentication authentication, Pageable pageable) {
         AuthenticatedTrainer trainer = (AuthenticatedTrainer) authentication.getPrincipal();
 
-        List<PokemonInfoResponse> pokemonTeam = pokemonQueryService.findPokemonByLocation(trainer.getId(), PokemonLocation.TEAM);
+        Page<PokemonInfoResponse> pokemonTeam = pokemonQueryService.findPokemonByLocation(trainer.getId(), PokemonLocation.TEAM, pageable);
         return ResponseEntity.ok(pokemonTeam);
     }
 
     @GetMapping("/storage")
-    public ResponseEntity<List<PokemonInfoResponse>> getStoragePokemon(Authentication authentication) {
+    public ResponseEntity<Page<PokemonInfoResponse>> getStoragePokemon(
+            Authentication authentication, 
+            @PageableDefault(
+                size = 10,
+                sort = "nickname") Pageable pageable) {
         AuthenticatedTrainer trainer = (AuthenticatedTrainer) authentication.getPrincipal();
 
-        List<PokemonInfoResponse> storedPokemon = pokemonQueryService.findPokemonByLocation(trainer.getId(), PokemonLocation.STORAGE);
+        Page<PokemonInfoResponse> storedPokemon = pokemonQueryService.findPokemonByLocation(trainer.getId(), PokemonLocation.STORAGE, pageable);
         return ResponseEntity.ok(storedPokemon);
     }
 
