@@ -48,9 +48,10 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build Docker image
-        run: docker build -t ghcr.io/${{ github.repository_owner }}/admin-team-pokemon:latest .
+        run: docker build -t ghcr.io/roberhp/admin-team-pokemon:latest .
             
       - name: Push Docker image
         if: github.event_name == 'push'
-        run: docker push ghcr.io/${{ github.repository_owner }}/admin-team-pokemon:latest
+        run: docker push ghcr.io/roberhp/admin-team-pokemon:latest .
+
 
