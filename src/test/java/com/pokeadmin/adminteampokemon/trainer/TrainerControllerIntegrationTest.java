@@ -15,7 +15,7 @@ class TrainerControllerIntegrationTest extends BaseIntegrationTest {
     void shouldReturnUnauthorized() throws Exception {
 
         mockMvc.perform(get("/trainers"))
-                .andExpect(status().isUnauthorized());
+                .andExpect(status().isForbidden());
 
     }
 

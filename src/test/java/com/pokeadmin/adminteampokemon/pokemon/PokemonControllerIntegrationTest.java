@@ -13,9 +13,8 @@ class PokemonControllerIntegrationTest extends BaseIntegrationTest {
     @Test
     void shouldRejectAnonymousUser() throws Exception {
 
-        mockMvc.perform(
-                get("/pokemon/25")
-        ).andExpect(status().isUnauthorized());
+        mockMvc.perform(get("/pokemon/25")
+        ).andExpect(status().isForbidden());
 
     }
 

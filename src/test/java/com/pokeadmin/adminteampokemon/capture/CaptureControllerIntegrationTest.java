@@ -22,7 +22,7 @@ class CaptureControllerIntegrationTest extends BaseIntegrationTest {
                                   "pokemonId":25
                                 }
                                 """)
-        ).andExpect(status().isUnauthorized());
+        ).andExpect(status().isForbidden());
 
     }
 

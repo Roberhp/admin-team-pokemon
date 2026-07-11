@@ -23,7 +23,7 @@ class AuthIntegrationTest extends BaseIntegrationTest {
                                   "password":"1234"
                                 }
                                 """)
-        ).andExpect(status().isUnauthorized());
+        ).andExpect(status().isForbidden());
 
     }
 
