@@ -51,11 +51,17 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build Docker image
-        run: docker build -t ghcr.io/${{ github.repository_owner }}/${{ env.IMAGE_NAME }}:latest .
+        run: |
+          docker build \
+            -t ghcr.io/${{ github.repository_owner }}/${{ env.IMAGE_NAME }}:${{ github.sha }} \
+            -t ghcr.io/${{ github.repository_owner }}/${{ env.IMAGE_NAME }}:latest .
             
       - name: Push Docker image
         if: github.event_name == 'push'
-        run: docker push ghcr.io/${{ github.repository_owner }}/${{ env.IMAGE_NAME }}:latest
+        run: |
+          docker push ghcr.io/${{ github.repository_owner }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
+          docker push ghcr.io/${{ github.repository_owner }}/${{ env.IMAGE_NAME }}:latest
+          
 
       - name: Configure AWS credentials
         if: github.event_name == 'push'
@@ -74,11 +80,36 @@ jobs:
         if: github.event_name == 'push'
         run: |
           docker tag \
-            ghcr.io/${{ github.repository_owner }}/${{ env.IMAGE_NAME }}:latest \
+            ghcr.io/${{ github.repository_owner }}/${{ env.IMAGE_NAME }}:${{ github.sha }} \
+            ${{ secrets.AWS_ECR_REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
+      
+          docker tag \
+            ghcr.io/${{ github.repository_owner }}/${{ env.IMAGE_NAME }}:${{ github.sha }} \
             ${{ secrets.AWS_ECR_REGISTRY }}/${{ env.IMAGE_NAME }}:latest
 
       - name: Push image to Amazon ECR
         if: github.event_name == 'push'
         run: |
           docker push \
+            ${{ secrets.AWS_ECR_REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
+      
+          docker push \
             ${{ secrets.AWS_ECR_REGISTRY }}/${{ env.IMAGE_NAME }}:latest
+
+      - name: Render ECS task definition
+        if: github.event_name == 'push'
+        id: render
+        uses: aws-actions/amazon-ecs-render-task-definition@v1
+        with:
+          task-definition: .github/ecs-task-definition.json
+          container-name: pokemon-api
+          image: ${{ secrets.AWS_ECR_REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
+    
+      - name: Deploy to Amazon ECS
+        if: github.event_name == 'push'
+        uses: aws-actions/amazon-ecs-deploy-task-definition@v2
+        with:
+          task-definition: ${{ steps.render.outputs.task-definition }}
+          service: pokemon-api-service
+          cluster: pokemon-admin
+          wait-for-service-stability: true

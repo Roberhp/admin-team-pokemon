@@ -1,0 +1,70 @@
+{
+    "family": "admin-team-pokemon",
+    "networkMode": "awsvpc",
+    "executionRoleArn": "arn:aws:iam::871576120492:role/ecsTaskExecutionRole",
+    "containerDefinitions": [
+      {
+        "name": "pokemon-api",
+        "image": "871576120492.dkr.ecr.us-east-1.amazonaws.com/admin-team-pokemon:latest",
+        "essential": true,
+        "portMappings": [
+          {
+            "containerPort": 8080,
+            "hostPort": 8080,
+            "protocol": "tcp",
+            "appProtocol": "http"
+          }
+        ],
+        "environment": [
+          {
+            "name": "SPRING_PROFILES_ACTIVE",
+            "value": "aws"
+          },
+          {
+            "name": "SPRING_DATASOURCE_URL",
+            "value": "jdbc:postgresql://pokemondb.cotg4ska0hn7.us-east-1.rds.amazonaws.com:5432/pokemondb"
+          }
+        ],
+        "secrets": [
+          {
+            "name": "SPRING_DATASOURCE_USERNAME",
+            "valueFrom": "arn:aws:secretsmanager:us-east-1:871576120492:secret:pokeAdmin-0OGIdf:DB_USERNAME::"
+          },
+          {
+            "name": "SPRING_DATASOURCE_PASSWORD",
+            "valueFrom": "arn:aws:secretsmanager:us-east-1:871576120492:secret:pokeAdmin-0OGIdf:DB_PASSWORD::"
+          },
+          {
+            "name": "SPRING_DATA_REDIS_HOST",
+            "valueFrom": "arn:aws:secretsmanager:us-east-1:871576120492:secret:pokeAdmin-0OGIdf:REDIS_HOST::"
+          },
+          {
+            "name": "SPRING_DATA_REDIS_PORT",
+            "valueFrom": "arn:aws:secretsmanager:us-east-1:871576120492:secret:pokeAdmin-0OGIdf:REDIS_PORT::"
+          },
+          {
+            "name": "JWT_SECRET",
+            "valueFrom": "arn:aws:secretsmanager:us-east-1:871576120492:secret:pokeAdmin-0OGIdf:JWT_SECRET::"
+          }
+        ],
+        "logConfiguration": {
+          "logDriver": "awslogs",
+          "options": {
+            "awslogs-group": "/ecs/admin-team-pokemon",
+            "awslogs-region": "us-east-1",
+            "awslogs-stream-prefix": "ecs",
+            "awslogs-create-group": "true"
+          }
+        }
+      }
+    ],
+    "requiresCompatibilities": [
+      "FARGATE"
+    ],
+    "cpu": "256",
+    "memory": "512",
+    "runtimePlatform": {
+      "cpuArchitecture": "X86_64",
+      "operatingSystemFamily": "LINUX"
+    }
+  }
