@@ -1,112 +1,415 @@
-# Admin Team Pokémon API
+# Admin Team Pokémon
 
-REST API developed with **Spring Boot 3** to manage Pokémon teams for authenticated trainers.
+![Java](https://img.shields.io/badge/Java-17-orange)
+![Spring Boot](https://img.shields.io/badge/Spring_Boot-3.5-green)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-17-blue)
+![Redis](https://img.shields.io/badge/Redis-Valkey-red)
+![AWS](https://img.shields.io/badge/AWS-ECS_Fargate-yellow)
+![Docker](https://img.shields.io/badge/Docker-enabled-blue)
 
-The project was built as a learning project focused on modern backend development practices, including authentication, REST APIs, Docker, OpenAPI, design patterns, and automated testing.
+A cloud-native REST API built with Java and Spring Boot that allows trainers to manage their Pokémon team and storage.
+
+The project was designed to demonstrate modern backend development practices, including containerization, cloud deployment, caching, database migrations, CI/CD, and AWS infrastructure.
+
+---
+## Table of Contents
+
+- [Features](#features)
+- [Architecture](#architecture)
+- [Tech Stack](#tech-stack)
+- [AWS Architecture](#aws-architecture)
+- [CI/CD](#cicd)
+- [Version](#version)
+- [REST API](#rest-api)
+- [Environment Variables](#environment-variables)
+- [Run Locally](#run-locally)
+- [Project Structure](#project-structure)
+- [Deployment](#deployment)
+- [Future Improvements](#future-improvements)
+- [License](#license)
+- [Author](#author)
 
 ---
 
 ## Features
 
-- Trainer registration and authentication using JWT
-- Capture Pokémon
-- Move Pokémon between Team and Storage
-- Rename captured Pokémon
-- Delete captured Pokémon
-- Retrieve Team and Storage information
-- Automatic Pokémon information retrieval from PokeAPI
-- OpenAPI / Swagger documentation
-- Docker & Docker Compose support
+- User registration and authentication using JWT
+- Pokémon search using the public PokeAPI
+- Pokémon caching with Redis
+- PostgreSQL persistence
+- Automatic database migrations with Flyway
+- Swagger / OpenAPI documentation
+- Health monitoring using Spring Boot Actuator
+- CI/CD with GitHub Actions
+- Dockerized application
+- Cloud deployment on AWS ECS Fargate
 
 ---
 
-## Tech Stack
 
-- Java 17
-- Spring Boot 3
-- Spring Security
-- JWT
-- Spring Data JPA
-- PostgreSQL
-- Docker
-- Docker Compose
-- OpenAPI / Swagger
-- JUnit 5
-- Mockito
-- Maven
+## Project Goals
+
+The purpose of this project is to demonstrate modern backend development practices using Java and Spring Boot while deploying a production-like application on AWS.
+
+Main objectives include:
+
+- REST API development
+- JWT Authentication
+- Cloud deployment
+- Redis caching
+- Database migrations
+- CI/CD automation
+- AWS cloud architecture
 
 ---
 
 ## Architecture
 
-The project follows a layered architecture.
-
 ```
-Controller
-    ↓
-Service
-    ↓
-Repository
-    ↓
-PostgreSQL
-```
-
-External integrations are isolated using the Adapter Pattern.
-
-```
-PokemonClient
-        ▲
-        │
-PokeApiAdapter
-        │
-     PokeAPI
+                Internet
+                     │
+                     ▼
+      Application Load Balancer (ALB)
+                     │
+                     ▼
+             Amazon ECS (Fargate)
+                     │
+          Spring Boot REST API
+          ├─────────────────────────┐
+          │                         │
+          ▼                         ▼
+ Amazon RDS PostgreSQL      Amazon ElastiCache Redis
 ```
 
 ---
 
-## Running the project
+## Tech Stack
 
-### Clone the repository
+### Backend
 
-```bash
-git clone https://github.com/Roberhp/admin-team-pokemon.git
-```
+- Java 17
+- Spring Boot 3
+- Spring Security
+- Spring Data JPA
+- Spring Data Redis
+- JWT
+- Maven
 
-### Start the application
+### Database
 
-```bash
-docker compose up --build
-```
+- PostgreSQL
+- Flyway
 
-Swagger will be available at:
+### Infrastructure
 
-```
-http://localhost:8080/swagger-ui/index.html
-```
+- Docker
+- Amazon ECS
+- AWS Fargate
+- Amazon ECR
+- Amazon RDS
+- Amazon ElastiCache
+- Application Load Balancer
+- AWS Secrets Manager
 
----
-
-## Project Status
-
-Current features:
-
-- Authentication
-- Pokémon management
-- Dockerized environment
-- Swagger documentation
-- Unit Tests
-
-Planned improvements:
+### DevOps
 
 - GitHub Actions
-- Flyway
-- Redis Cache
-- Integration Tests
-- AWS Deployment
-- Kubernetes
+- Docker Compose
 
 ---
+
+## AWS Architecture
+
+- Amazon ECS (Fargate)
+- Amazon ECR
+- Application Load Balancer
+- Target Groups
+- Health Checks
+- Amazon RDS PostgreSQL
+- Amazon ElastiCache Redis
+- AWS Secrets Manager
+- CloudWatch Logs
+
+---
+
+## CI/CD
+
+Every push to the `main` branch automatically:
+
+1. Builds the application
+2. Runs unit tests
+3. Builds the Docker image
+4. Pushes the image to Amazon ECR
+5. Creates a new ECS Task Definition
+6. Deploys the new version to Amazon ECS
+
+---
+
+## Version
+
+**Current Version:** `v1.0.0`
+
+### Changelog
+
+#### v1.0.0
+
+- JWT Authentication
+- PostgreSQL persistence
+- Redis cache
+- Docker support
+- CI/CD with GitHub Actions
+- Deployment on AWS ECS Fargate
+- AWS Application Load Balancer
+- Spring Boot Actuator
+- Swagger / OpenAPI
+
+---
+
+
+## REST API
+
+The application is publicly accessible through an AWS Application Load Balancer.
+
+**Base URL**
+
+```text
+http://pokemon-api-alb-2141079680.us-east-1.elb.amazonaws.com
+```
+
+### Main Endpoints
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST | `/api/v1/auth/register` | Register a new trainer |
+| POST | `/api/v1/auth/login` | Authenticate and obtain a JWT |
+| GET | `/api/pokedex/{pokemonName}` | Retrieve Pokémon information from PokeAPI |
+| GET | `/swagger-ui/index.html` | Swagger UI |
+| GET | `/actuator/health` | Application health check |
+
+
+### Swagger UI
+
+```text
+http://pokemon-api-alb-2141079680.us-east-1.elb.amazonaws.com/swagger-ui/index.html
+```
+
+Interactive documentation for all available REST endpoints.
+
+### Health Check
+
+```text
+http://pokemon-api-alb-2141079680.us-east-1.elb.amazonaws.com/actuator/health
+```
+
+Spring Boot Actuator endpoint used by the AWS Application Load Balancer to verify the application's health.
+
+---
+
+## API Documentation
+
+Swagger UI is available at:
+
+http://pokemon-api-alb-2141079680.us-east-1.elb.amazonaws.com/swagger-ui/index.html
+
+The OpenAPI specification is automatically generated by SpringDoc OpenAPI.
+
+----
+
+## Security
+
+The application implements several security best practices:
+
+- JWT Authentication
+- Stateless sessions
+- Password hashing using BCrypt
+- Secrets stored in AWS Secrets Manager
+- Environment-based configuration
+- Health endpoints exposed only for monitoring
+
+---
+
+
+## Environment Variables
+
+| Variable | Description |
+|-----------|-------------|
+| DB_HOST | PostgreSQL host |
+| DB_PORT | PostgreSQL port |
+| DB_NAME | Database name |
+| DB_USERNAME | Database username |
+| DB_PASSWORD | Database password |
+| REDIS_HOST | Redis endpoint |
+| REDIS_PORT | Redis port |
+| JWT_SECRET | JWT signing secret |
+
+---
+
+
+
+## Run locally
+
+docker compose up -d
+mvn spring-boot:run
+
+--
+
+
+## Testing
+
+The project includes:
+
+- Unit Tests
+- Spring Boot Test
+- JUnit 5
+- Mockito
+
+Run the tests using:
+
+```bash
+mvn test
+```
+
+---
+
+
+## Project Structure
+
+```
+src
+ ├── auth
+ ├── capture
+ ├── config
+ ├── integration
+ ├── pokemon
+ ├── security
+ ├── trainer
+ └── util
+```
+---
+
+## Deployment
+
+The application is deployed on AWS using:
+
+- Amazon ECS (Fargate)
+- Amazon ECR
+- Amazon RDS PostgreSQL
+- Amazon ElastiCache (Valkey/Redis)
+- Application Load Balancer
+- AWS Secrets Manager
+- GitHub Actions for CI/CD
+
+---
+
+
+
+## Monitoring
+
+Application monitoring is provided by:
+
+- Spring Boot Actuator
+- Health Checks
+- AWS Application Load Balancer
+- CloudWatch Logs
+
+---
+
+## Performance
+
+Current deployment characteristics:
+
+- Stateless REST API
+- Redis cache for external API responses
+- PostgreSQL connection pooling (HikariCP)
+- Containerized with Docker
+- Running on AWS ECS Fargate
+- Load balanced through an AWS Application Load Balancer
+
+---
+
+
+## Roadmap
+
+### Completed
+
+- JWT Authentication
+- Docker
+- PostgreSQL
+- Redis
+- ECS Fargate
+- CI/CD
+- Health Checks
+
+### In Progress
+
+- Pokémon Team Management
+- Pokémon Storage
+
+### Planned
+
+- HTTPS
+- Custom Domain
+- Auto Scaling
+- Kafka Integration
+- Monitoring Dashboard
+
+---
+
+## Design Decisions
+
+- PostgreSQL was selected as the relational database.
+- Redis is used to cache Pokémon information obtained from PokeAPI.
+- Flyway manages database versioning.
+- Secrets are stored in AWS Secrets Manager.
+- The application is deployed using ECS Fargate.
+- CI/CD is implemented through GitHub Actions.
+
+---
+
+## Known Limitations
+
+Current limitations of the project:
+
+- Single ECS task (no Auto Scaling yet)
+- HTTP only (HTTPS planned)
+- Public AWS ALB DNS instead of a custom domain
+- Redis used only for Pokémon caching
+- No rate limiting implemented
+- No monitoring dashboards or distributed tracing yet
+- No integration tests running inside the CI/CD pipeline
+
+---
+
+## Lessons Learned
+
+During the development of this project I learned about:
+
+- ECS Fargate deployments
+- Amazon ECR
+- Application Load Balancers
+- AWS Security Groups
+- Health Checks
+- Redis integration
+- AWS Secrets Manager
+- GitHub Actions
+- Docker
+
+
+## License
+
+This project is licensed under the MIT License. See the `LICENSE` file for more information.
+
+---
+
 
 ## Author
 
 Roberto Huerta
+
+Backend Software Engineer
+
+Java | Spring Boot | AWS | PostgreSQL | Redis
+
+
+---
+
